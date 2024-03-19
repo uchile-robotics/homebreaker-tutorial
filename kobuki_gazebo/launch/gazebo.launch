@@ -1,0 +1,39 @@
+<?xml version="1.0"?>
+<launch>
+    <!-- GUI -->
+	<arg name="rviz"           default="true"/>
+    <arg name="gazebo_gui"     default="true"/>
+
+    <!-- robot simulation -->
+	<arg name="worldname"  default="empty"/>
+    <arg name="use_sim_time"           default="true"/>
+    <arg name="init_pose"   value="-x 0 -y 0 -z 0"/>
+    <arg name="init_pose_x" value="0"/>
+    <arg name="init_pose_y" value="0"/>
+    <arg name="robot_name"  value="jaime"/>
+
+    <!-- Load the URDF Model -->
+    <arg name="urdf_file" default="$(find xacro)/xacro --inorder '$(find kobuki_description)/urdf/kobuki_standalone.urdf.xacro'"/>
+    <param name="robot_description" command="$(arg urdf_file)"/>
+
+    <node name="spawn_model" pkg="gazebo_ros" type="spawn_model"
+     args="$(arg init_pose) -urdf -param /robot_description -model $(arg robot_name)"
+     respawn="false" output="screen" />
+
+    <node pkg="robot_state_publisher" type="robot_state_publisher"
+          name="robot_state_publisher" output="screen"/>
+    
+    <node name="joint_state_publisher" pkg="joint_state_publisher" type="joint_state_publisher">
+        <param name="use_gui" value="true"/>
+    </node>
+
+    <include file="$(find kobuki_node)/launch/minimal.launch"/>
+    
+    <!-- Launch Gazebo with empty world -->
+    <include file="$(find gazebo_ros)/launch/empty_world.launch">
+        <!-- <arg name="world_name" value="$(find uchile_gazebo)/worlds/$(arg worldname).world"/> -->
+        <arg name="use_sim_time" value="$(arg use_sim_time)"/>
+        <arg name="gui" value="$(arg gazebo_gui)"/>
+    </include>
+
+</launch>
