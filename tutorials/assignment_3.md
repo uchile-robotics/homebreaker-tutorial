@@ -87,7 +87,7 @@ def getInstance():
             }
         )
 
-        # I.E a standar state definition should look like this:
+        # I.E a standard state definition should look like this:
         smach.StateMachine.add('STATE2', ExampleState(), transitions={'outcome1':'STATE1', 'outcome2':'outcome3'},remapping={"data_1":"data_1"})
 
 if __name__ == '__main__':
