@@ -1,0 +1,174 @@
+
+# Initial pose (x, y, yaw, cov_x, cov_y, cov_yaw), used to initialize
+# filter with Gaussian distribution.
+#initial_pose_x: 0.0
+#initial_pose_y: 0.0
+#initial_pose_a: 0.0
+#initial_cov_xx: 5*5
+#initial_cov_yy: 5*5
+#initial_cov_aa: pi*pi/12*12
+
+
+# Overall filter parameters
+# --------------------------------------
+
+# min/max allowed number of particles.
+# (default: 100, 5000)
+min_particles: 100
+max_particles: 5000
+
+# max error between the true distribution and the estimated distribution.
+# (default: 0.01)
+kld_err: 0.03
+
+# Upper standard normal quantile for (1-p), where p is the probability that the error on the
+# estimated distrubition will be less than kld_err.
+# (default: 0.99)
+kld_z: 0.99
+
+# Translational movement required before performing a filter update. [m]
+# (default: 0.2 [m])
+update_min_d: 0.01
+
+# Rotational movement required before performing a filter update. [rad]
+# (default: pi/6 [rad])
+update_min_a: 0.052 # 3 deg
+
+# Number of filter updates required before resampling.
+# (default: 2)
+resample_interval: 1
+
+# Time with which to post-date the transform that is published, to indicate that this transform
+# is valid into the future.
+# (default: 0.1 [s])
+transform_tolerance: 0.1
+
+# Exponential decay rate for the slow average weight filter, used in deciding when to recover by
+# adding random poses. A good value might be 0.001.
+# (default: 0.0 (disabled))
+recovery_alpha_slow: 0.0
+
+# Exponential decay rate for the fast average weight filter, used in deciding when to recover by
+# adding random poses. A good value might be 0.1.
+# (default: 0.0 (disabled))
+recovery_alpha_fast: 0.0
+
+# Maximum rate (Hz) at which scans and paths are published for visualization, -1.0 to disable.
+gui_publish_rate: 10
+
+# Maximum rate (Hz) at which to store the last estimated pose and covariance to the parameter
+# server, in the variables: ~initial_pose_*  and  ~initial_cov_*. This saved pose will be used
+# on subsequent runs to initialize the filter. -1.0 to disable.
+# (default: 0.4 [Hz])
+#save_pose_rate: 0.5
+
+# When set to true, AMCL will subscribe to the map topic rather than making a service call to
+# receive its map.
+# (default: false)
+use_map_topic: true
+
+# When set to true, AMCL will only use the first map it subscribes to, rather than updating each
+# time a new one is received.
+# (default: false)
+first_map_only: false
+
+
+
+# Laser model parameters
+# --------------------------------------
+#
+# Note that whichever mixture weights are in use should sum to 1.
+# The beam model uses all 4: z_hit, z_short, z_max, and z_rand.
+# The likelihood_field model uses only 2: z_hit and z_rand.
+#
+
+# min/max scan range to be considered; -1.0 will cause the laser's reported min/max range to be used.
+# (default: -1, -1)
+laser_min_range: 0.3
+laser_max_range: 2.4
+
+# How many evenly-spaced beams in each scan to be used when updating the filter.
+# (default: 30)
+laser_max_beams: 30
+
+# Mixture weight for the z_hit part of the model.
+# (default: 0.95)
+laser_z_hit: 0.5
+
+# Mixture weight for the z_short part of the model.
+# (default: 0.10)
+laser_z_short: 0.05
+
+# Mixture weight for the z_max part of the model.
+# (default: 0.05)
+laser_z_max: 0.05
+
+# Mixture weight for the z_rand part of the model.
+# (default: 0.05)
+laser_z_rand: 0.5
+
+# Standard deviation for Gaussian model used in z_hit part of the model.
+# (default: 0.20)
+laser_sigma_hit: 0.2
+
+# Exponential decay parameter for z_short part of model.
+# (default: 0.10)
+laser_lambda_short: 0.1
+
+# Maximum distance to do obstacle inflation on map, for use in likelihood_field model.
+# (default: 2.0 [m])
+laser_likelihood_max_dist: 2.0
+
+# Which model to use, either beam, likelihood_field, or likelihood_field_prob.
+# (default: "likelihood_field")
+laser_model_type: likelihood_field
+
+
+
+# Odometry model parameters
+# --------------------------------------
+#
+# If ~odom_model_type is "diff" then we use the sample_motion_model_odometry algorithm from
+# Probabilistic Robotics, p136; this model uses the noise parameters odom_alpha_1 through odom_alpha4,
+# as defined in the book.
+#
+# If ~odom_model_type is "omni" then we use a custom model for an omni-directional base, which uses
+# odom_alpha_1 through odom_alpha_5. The meaning of the first four parameters is similar to that for
+# the "diff" model. The fifth parameter capture the tendency of the robot to translate (without rotating)
+# perpendicular to the observed direction of travel.
+
+
+# Which model to use, either "diff", "omni", "diff-corrected" or "omni-corrected". .
+odom_model_type: diff-corrected
+
+# Specifies the expected noise in odometry's rotation estimate from the rotational component of the robot's motion.
+# (default: 0.2)
+odom_alpha1: 0.2
+
+# Specifies the expected noise in odometry's rotation estimate from translational component of the robot's motion.
+# (default: 0.2)
+odom_alpha2: 0.2
+
+# Specifies the expected noise in odometry's translation estimate from the translational component of the robot's motion.
+# (default: 0.2)
+odom_alpha3: 0.2
+
+# Specifies the expected noise in odometry's translation estimate from the rotational component of the robot's motion.
+# (default: 0.2)
+odom_alpha4: 0.2
+
+# Translation-related noise parameter (only used if model is "omni").
+# (default: 0.2)
+odom_alpha5: 0.2
+
+# Which frame to use for odometry.
+# (default: "odom")
+odom_frame_id: odom
+
+# Which frame to use for the robot base
+# (default: "base_link")
+base_frame_id: base_link
+
+# The name of the coordinate frame published by the localization system
+# (default: "map")
+global_frame_id: map

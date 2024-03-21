@@ -1,0 +1,23 @@
+<?xml version="1.0"?>
+<launch>
+
+    <!-- localization type: odometry, amcl, gmapping
+      - odometry: Just believe the odometry. Fast, but bad for large movements.
+      - amcl    : Localization algorithm, merges odometry with laser readings. Good performance.
+      - gmapping: Use this to create a new map.
+    -->
+
+    <!-- This is the name of the map to be loaded on the map server -->
+    <arg name="map_name"  default="stage"/>
+
+        <!-- static map server -->
+    <node pkg="map_server" type="map_server" name="map_server"
+		respawn="true" args="$(find move_base_navigation)/maps/$(arg map_name).yaml"/>
+
+    <!-- amcl -->
+    <node pkg="amcl" type="amcl" name="amcl" respawn="true" output="screen">
+        <remap from="map" to="/map"/>
+        <rosparam file="$(find move_base_navigation)/params/localization/amcl.yaml" command="load"/>
+    </node>
+
+</launch>

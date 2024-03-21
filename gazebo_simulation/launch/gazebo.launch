@@ -1,0 +1,27 @@
+<?xml version="1.0"?>
+<launch>
+    <!-- GUI -->
+	<arg name="rviz"           default="true"/>
+    <arg name="gazebo_gui"     default="true"/>
+
+    <!-- robot simulation -->
+	<arg name="worldname"    default="stage"/>
+    <arg name="use_sim_time" default="true"/>
+    <arg name="init_pose"   value="-x 0 -y 0 -z 0"/>
+    <arg name="init_pose_x" value="0"/>
+    <arg name="init_pose_y" value="0"/>
+    <arg name="robot_name"  value="jaime"/>
+
+    <!-- Launches Kobuki Gazebo simulation in an empty world -->
+    <!-- start Gazebo with an empty world -->
+    <include file="$(find gazebo_ros)/launch/empty_world.launch">
+        <arg name="use_sim_time" value="true"/>
+        <arg name="debug"        value="false"/>
+        <arg name="world_name"   value="$(find gazebo_simulation)/worlds/$(arg worldname).world"/>
+        <arg name="gui"      value="$(arg gazebo_gui)"/>
+    </include>
+    
+    <!-- spawn the robot -->
+    <include file="$(find kobuki_gazebo)/launch/includes/robot.launch.xml"/>
+
+</launch>
