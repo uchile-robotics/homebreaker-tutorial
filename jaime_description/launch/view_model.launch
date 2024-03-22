@@ -1,0 +1,19 @@
+<!--
+  Useful for debugging or just viewing the jaime model/urdf/transform.
+ -->
+<launch>
+  <arg name="model_type" default="jaime_standalone" />
+
+  <arg name="urdf_file" default="$(find xacro)/xacro --inorder '$(find jaime_description)/urdf/$(arg model_type).urdf.xacro'"/>
+
+  <param name="robot_description" command="$(arg urdf_file)"/>
+
+  <node pkg="robot_state_publisher" type="robot_state_publisher" name="robot_state_publisher" output="screen">
+
+  </node>
+  <node name="joint_state_publisher" pkg="joint_state_publisher" type="joint_state_publisher">
+
+  </node>
+
+  <node name="rviz" pkg="rviz" type="rviz" args="-d $(find jaime_description)/rviz/model.rviz"/>
+</launch>
