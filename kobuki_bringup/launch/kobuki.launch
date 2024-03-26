@@ -1,0 +1,11 @@
+<?xml version="1.0"?>
+<launch>
+    <arg name="urdf_file" default="$(find xacro)/xacro '$(find jaime_description)/urdf/jaime_standalone.urdf.xacro'"/>
+
+    <include file="$(find kobuki_node)/launch/robot_with_tf.launch">
+        <arg name="urdf_file" value="$(arg urdf)"/>
+    </include>
+
+    <node name="urg_node" pkg="urg_node" type="urg_node" output="screen"/>
+
+</launch>
