@@ -14,7 +14,7 @@ class Joy_Template(object):
         self.args = args
 
         # Subscribe to Joy messages
-        self._joy_sub = rospy.Subscriber("look-for-the-joy-topic", Joy, self.joy_callback)
+        self._joy_sub = rospy.Subscriber("/joy", Joy, self.joy_callback)
         
         # Subscribe to AMCL pose messages
         self._amcl_sub = rospy.Subscriber("/amcl_pose", PoseWithCovarianceStamped, self.amcl_callback)

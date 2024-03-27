@@ -152,6 +152,9 @@ if __name__ == "__main__":
     rospy.init_node('move_base_client_test')
     mb = BaseSkill()
     
+    # You can set different goals to test the code.
+    # Make sure the targets are feasible.
+    # Example:
     mb.set_target(1, 1, 0) # go to position x: 1m, y: 1m, theta: 0 deg
     mb.go()
     mb.rotate(90) # rotate to angle 90 degrees
