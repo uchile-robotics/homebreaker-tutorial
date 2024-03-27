@@ -128,7 +128,7 @@ Now that you have an idea of what SMACHs are, let's begin your challenge:
    - Verify that the robot will transition to the state you want by testing your logic in an isolated way (without adding any skills or commands, just user input and your SMACH).
 
 4. **Test it!**
-    - Test your code on simulation by running `python smach_template.py`
+    - Test your code on simulation by running `rosrun homebreaker_tutorial smach_template.py`
     - If it works, go try it on the real one!
 
 ## Summary
