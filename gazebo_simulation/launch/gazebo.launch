@@ -36,5 +36,9 @@
     </node>
 
     <node pkg="nodelet" type="nodelet" name="$(arg robot_name)_nodelet_manager" args="manager"/>
+
+    <node name="joy_node" pkg="joy" type="joy_node" output="screen"/>
+    
+    <include file="$(find move_base_navigation)/launch/localization.launch"/>
     
 </launch>
