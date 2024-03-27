@@ -7,64 +7,91 @@ from std_msgs.msg import String, Int32  # Import ROS messages of type String and
 from sensor_msgs.msg import Joy  # Import Joy message type
 from geometry_msgs.msg import Twist, PoseWithCovarianceStamped # Import ROS messages of type geometry
 
+
 class Joy_Template(object):
     def __init__(self, args):
         super(Joy_Template, self).__init__()
         self.args = args
+
         # Subscribe to Joy messages
-        self.sub = rospy.Subscriber("/joy", Joy, self.callback)
-        self.amcl = rospy.Subscriber("/amcl_pose", PoseWithCovarianceStamped, self.amcl_callback)
-        # Publish control instructions to possible_cmd
-        self.publi = rospy.Publisher("/mobile_base/commands/velocity", Twist, queue_size=8)
+        self._joy_sub = rospy.Subscriber("look-for-the-joy-topic", Joy, self.joy_callback)
+        
+        # Subscribe to AMCL pose messages
+        self._amcl_sub = rospy.Subscriber("/amcl_pose", PoseWithCovarianceStamped, self.amcl_callback)
+        
+        # velocity publisher
+        self._cmd_vel_pub = rospy.Publisher("look-for-the-cmdvel-topic", Twist, queue_size=8)
+
+        # ROS Messages
         self.twist = Twist()
-        self.pose = PoseWithCovarianceStamped()
+        self.robot_pose = None
         self.poses = []
 
-    def callback(self, msg):
-        a = msg.buttons[0]
-        b = msg.buttons[1]
-        x = msg.buttons[2]
-        l_analog = msg.axes[1]
-        r_analog = msg.axes[3]
+    def joy_callback(self, msg):
+        """This method will be called everytime a new Joy message is received.
 
-        self.twist.linear.x = 0.5*l_analog
-        self.twist.angular.z = 0.3*r_analog
+        Args:
+            msg (sensor_msgs/Joy): The incoming joy message.
+            definition at: https://docs.ros.org/en/melodic/api/sensor_msgs/html/msg/Joy.html
+        """
+
+        # Choose which buttons to use
+        a = msg.buttons[...] 
+        b = msg.buttons[...] 
+        x = msg.buttons[...] 
+        l_analog = msg.axes[...]
+        r_analog = msg.axes[...]
+
+        # Choose a multiplier for the linear and angular speed
+        # !Note: The velocity is in [m/s] and [rad/s]. Use multipliers that make sense
+        # (the robot cannot muve faster than 1.2 [m/s])
+        self.twist.linear.x  = ... * l_analog
+        self.twist.angular.z = ... * r_analog
         
+        # STOP Button
         if a == 1:
             self.twist.linear.x = 0.0
             self.twist.angular.z = 0.0
-            
-        if b == 1:
-            self.poses.append(self.pose)
-            print(self.poses)
         
+        # Add pose button
+        if b == 1:
+            self.poses.append(self...)
+        
+        # Save ALL poses to file button
         if x == 1:
             rospack = rospkg.RosPack()
             pkgDir = rospack.get_path('homebreaker_tutorial')
             np.save(pkgDir + '/poses/poses.npy', self.poses)
-            
-        self.publi.publish(self.twist)
+
+
+        # Publish the velocity message    
+        self._cmd_vel_pub.publish(self.twist)
         
+
     def amcl_callback(self, msg):
+        """This method will be called everytime a new AMCL message is received.
+            Saves the current pose reported by AMCL to the robot_pose variable.
+
+        Args:
+            msg (geometry_msgs/PoseWithCovarianceStamped): The incoming Pose message.
+            definition at: https://docs.ros.org/en/melodic/api/geometry_msgs/html/msg/PoseWithCovarianceStamped.html
+        """
         
-        pos_x = msg.pose.pose.position.x
-        pos_y = msg.pose.pose.position.y
-        pos_z = msg.pose.pose.position.z
+        # Save the corresponding pose message components
+        pos_x = msg. ...
+        pos_y = msg. ...
+        pos_z = msg. ...
         
         ori_x = msg.pose.pose.orientation.x
         ori_y = msg.pose.pose.orientation.y
         ori_z = msg.pose.pose.orientation.z
         ori_w = msg.pose.pose.orientation.w
         
-        self.pose = [pos_x, pos_y, pos_z, ori_x, ori_y, ori_z, ori_w]
+        self.robot_pose = [pos_x, pos_y, pos_z, ori_x, ori_y, ori_z, ori_w]
         
-        # position = pose[0:2]
-        # orientation = pose[3:6]
-        
-        pass
 
 def main():
-    rospy.init_node('test')  # Create and register the node!
+    rospy.init_node('joy_test')  # Create and register the node!
 
     obj = Joy_Template('args')  # Create an object of type Joy_Template, defined above
 
