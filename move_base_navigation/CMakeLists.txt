@@ -11,6 +11,9 @@ find_package(catkin REQUIRED COMPONENTS
   roscpp
   rospy
   std_msgs
+  nav_core
+  slam_gmapping
+  map_server
 )
 
 ## System dependencies are found with CMake's conventions
