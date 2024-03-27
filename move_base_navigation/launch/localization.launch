@@ -17,6 +17,7 @@
     <!-- amcl -->
     <node pkg="amcl" type="amcl" name="amcl" respawn="true" output="screen">
         <remap from="map" to="/map"/>
+        <remap from="/scan" to ="/scan/hokuyo"/>
         <rosparam file="$(find move_base_navigation)/params/localization/amcl.yaml" command="load"/>
     </node>
 
